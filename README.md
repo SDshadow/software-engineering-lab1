@@ -118,11 +118,11 @@ CREATE TABLE records (
 
 | 文件 | 说明 |
 | --- | --- |
-| `01-签到界面.png` | 系统首页（签到表单 + 今日状态） |
-| `02-签到成功.png` | 签到成功提示与状态回显 |
-| `03-重复签到拦截.png` | 同一学号重复签到的拦截提示 |
-| `04-签到记录.png` | 签到记录列表与统计 |
-| `05-命令行运行.png` | `python app.py` 启动与 `hello_ai.py` 运行结果 |
+| `01-signin-page.png` | 系统首页（签到表单 + 今日状态 + 统计卡片） |
+| `02-signin-success.png` | 签到成功提示与状态回显 |
+| `03-duplicate-signin-blocked.png` | 同一学号重复签到的拦截提示 |
+| `04-signin-records.png` | 签到记录列表、状态与迟到标记 |
+| `05-server-console.png` | 服务端控制台输出（启动信息与请求日志） |
 
 ## 八、AI 使用情况
 
