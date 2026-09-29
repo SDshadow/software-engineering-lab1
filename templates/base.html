@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}签到系统{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-mark">签</span>
+        <div class="brand-text">
+          <strong>课堂签到系统</strong>
+          <small>软件工程实验一 · Python + Flask + SQLite</small>
+        </div>
+      </div>
+      <nav class="site-nav">
+        <a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' }}">签到</a>
+        <a href="{{ url_for('records') }}" class="{{ 'active' if request.endpoint == 'records' }}">签到记录</a>
+        <a href="{{ url_for('export_csv') }}">导出 CSV</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">
+            <span class="flash-icon">{{ '✓' if category == 'ok' else '!' }}</span>
+            <span>{{ message }}</span>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <span>本地运行于 http://127.0.0.1:5000</span>
+    <span>数据存储：SQLite（data/signin.db）</span>
+  </footer>
+</body>
+</html>

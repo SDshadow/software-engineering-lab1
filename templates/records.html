@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}签到记录 · 课堂签到系统{% endblock %}
+
+{% block content %}
+<section class="stats-row">
+  <div class="stat-card">
+    <span class="stat-label">统计日期</span>
+    <span class="stat-value stat-value-sm">{{ stats.date }}</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">签到人数</span>
+    <span class="stat-value">{{ stats.signed_in }}</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">已签退</span>
+    <span class="stat-value">{{ stats.signed_out }}</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">迟到人数</span>
+    <span class="stat-value">{{ stats.late }}</span>
+  </div>
+</section>
+
+<section class="card">
+  <div class="card-head">
+    <h2 class="card-title">签到记录（共 {{ rows|length }} 条）</h2>
+    <form class="filter" method="get" action="{{ url_for('records') }}">
+      <select name="date" onchange="this.form.submit()">
+        <option value="">{{ current_date }}（今天）</option>
+        {% for d in dates %}
+          {% if d != current_date %}
+            <option value="{{ d }}">{{ d }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+      <a class="btn btn-ghost btn-sm" href="{{ url_for('export_csv', date=current_date) }}">导出 CSV</a>
+    </form>
+  </div>
+
+  {% if rows %}
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th><th>学号</th><th>姓名</th><th>日期</th>
+          <th>签到时间</th><th>签退时间</th><th>状态</th><th>是否迟到</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td class="mono">{{ r.student_no }}</td>
+          <td>{{ r.name }}</td>
+          <td>{{ r.sign_date }}</td>
+          <td class="mono">{{ r.sign_in_at }}</td>
+          <td class="mono">{{ r.sign_out_at or '—' }}</td>
+          <td><span class="badge badge-{{ 'ok' if r.sign_out_at else 'pending' }}">{{ r.status }}</span></td>
+          <td>
+            {% if r.sign_in_at and r.sign_in_at[11:16] > '09:00' %}
+              <span class="badge badge-warn">迟到</span>
+            {% else %}
+              <span class="badge badge-ok">正常</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <p class="empty">该日期暂无签到记录。</p>
+  {% endif %}
+</section>
+{% endblock %}

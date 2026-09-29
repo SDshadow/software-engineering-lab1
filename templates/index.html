@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}签到 · 课堂签到系统{% endblock %}
+
+{% block content %}
+<section class="stats-row">
+  <div class="stat-card">
+    <span class="stat-label">今日签到人数</span>
+    <span class="stat-value">{{ stats.signed_in }}</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">今日已签退</span>
+    <span class="stat-value">{{ stats.signed_out }}</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">迟到人数（09:00 后）</span>
+    <span class="stat-value">{{ stats.late }}</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">累计记录数</span>
+    <span class="stat-value">{{ stats.total_all }}</span>
+  </div>
+</section>
+
+<div class="grid">
+  <section class="card">
+    <h2 class="card-title">学生签到</h2>
+    <p class="card-desc">请输入学号与姓名，单击“签到”完成打卡。</p>
+
+    <form class="form" method="post" action="{{ url_for('signin') }}" id="signin-form">
+      <label class="field">
+        <span class="field-label">学号</span>
+        <input type="text" name="student_no" id="student_no" placeholder="例如 3020235111"
+               value="{{ student_no or '' }}" autocomplete="off" required>
+      </label>
+      <label class="field">
+        <span class="field-label">姓名</span>
+        <input type="text" name="name" id="name" placeholder="例如 张三"
+               autocomplete="off" required>
+      </label>
+      <div class="actions">
+        <button type="submit" class="btn btn-primary" id="btn-signin">签 到</button>
+      </div>
+    </form>
+
+    <form class="form" method="post" action="{{ url_for('signout') }}" id="signout-form">
+      <input type="hidden" name="student_no" id="signout_no" value="{{ student_no or '' }}">
+      <div class="actions">
+        <button type="submit" class="btn btn-ghost" id="btn-signout">签 退</button>
+      </div>
+      <p class="hint">签退会使用上方“学号”输入框中的值。</p>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2 class="card-title">今日状态</h2>
+    {% if student_no %}
+      {% if record %}
+        <ul class="status-list">
+          <li><span>学号</span><b>{{ record.student_no }}</b></li>
+          <li><span>姓名</span><b>{{ record.name }}</b></li>
+          <li><span>日期</span><b>{{ record.sign_date }}</b></li>
+          <li><span>签到时间</span><b>{{ record.sign_in_at }}</b></li>
+          <li><span>签退时间</span><b>{{ record.sign_out_at or '—' }}</b></li>
+          <li><span>状态</span>
+            <b class="badge badge-{{ 'ok' if record.sign_out_at else 'pending' }}">{{ record.status }}</b>
+          </li>
+        </ul>
+      {% else %}
+        <p class="empty">学号 <b>{{ student_no }}</b> 今天还没有签到记录。</p>
+      {% endif %}
+    {% else %}
+      <p class="empty">输入学号后，这里会显示你今天的签到状态。</p>
+    {% endif %}
+
+    <p class="hint">系统约定：09:00 之后签到记为迟到；同一学号同一天只能签到一次。</p>
+  </section>
+</div>
+{% endblock %}
